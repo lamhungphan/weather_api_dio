@@ -1,0 +1,50 @@
+import 'package:dio/dio.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:weather_api_dio/domain/model/weather_model.dart';
+
+class WeatherService {
+  static const BASE_URL = 'http://api.openweathermap.org/data/2.5/weather';
+  final String apiKey;
+  final dio = Dio();
+
+  WeatherService(this.apiKey);
+
+  Future<Weather> getWeather(String cityName) async {
+    try {
+      final response = await dio.get(
+        BASE_URL,
+        queryParameters: {'q': cityName, 'appid': apiKey, 'units': 'metric'},
+      );
+
+      // don't need jsonDecode cuz data return is already a Map
+      return Weather.fromJson(response.data);
+    } catch (e) {
+      throw Exception('Failed to load weather data: $e');
+    }
+  }
+
+  Future<String> getCurrentCity() async {
+    // get permission from user
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    // fetch the current location
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    // convert the location into a list of placemark objects
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+
+    // extract the city name form the first placemark
+    String? city = placemarks[0].locality;
+
+    return city ?? "";
+  }
+}
