@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final apiKey = dotenv.env['API_KEY'] ?? '';
+    final apiKey = dotenv.env['OPEN_WEATHER_KEY'] ?? '';
     return BlocProvider(
       create: (context) => WeatherBloc(WeatherRepository(apiKey: apiKey)),
       child: MaterialApp(

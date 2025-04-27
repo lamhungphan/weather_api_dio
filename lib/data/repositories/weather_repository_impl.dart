@@ -14,7 +14,8 @@ class WeatherRepository {
         queryParameters: {
           'q': city,
           'appid': apiKey,
-          'units': 'metric', // Nhiệt độ tính bằng °C
+          'units': 'metric', 
+          'lang': 'vi'
         },
       );
 
