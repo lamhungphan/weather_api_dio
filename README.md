@@ -1,16 +1,46 @@
 # weather_api_dio
 
-A new Flutter project.
+This app uses Dio for handling API requests
 
-## Getting Started
+It follows a lightweight Clean Architecture: Presentation → Domain → Data layers
 
-This project is a starting point for a Flutter application.
+State management is handled using Bloc
 
-A few resources to get you started if this is your first Flutter project:
+# Technologies Used
+Flutter
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Dio (for API calls)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Bloc (for state management)
+
+JSON Serialization (API response parsing)
+
+# Architecture Diagram
+![alt text](weather_app_architechture.jpg)
+
+# Interface
+![alt text](weather_app_ui.jpg)
+
+# Installation
+
+Clone the repository:
+```bash
+git clone https://github.com/lamhungphan/weather_api_dio.git
+```
+
+Install dependencies:
+```bash
+flutter pub get
+```
+
+Run the app:
+```bash
+flutter run
+```
+
+# Notes
+The app uses a weather API like OpenWeatherMap or any similar service
+
+Make sure to create an account and obtain a valid API key
+
+It’s recommended to handle network connectivity checks before making API calls
