@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:weather_api_dio/data/model/forecast_model.dart';
 import 'package:weather_api_dio/data/model/weather_model.dart';
 
 class WeatherRepository {
@@ -14,8 +15,8 @@ class WeatherRepository {
         queryParameters: {
           'q': city,
           'appid': apiKey,
-          'units': 'metric', 
-          'lang': 'vi'
+          'units': 'metric',
+          'lang': 'vi',
         },
       );
 
@@ -26,6 +27,36 @@ class WeatherRepository {
       }
     } catch (e) {
       throw Exception('Error fetching weather: $e');
+    }
+  }
+
+  Future<List<Forecast>> getForecast(String city) async {
+    try {
+      // Lấy lat/lon từ tên thành phố
+      final weather = await getWeather(city);
+      final lat = weather.lat;
+      final lon = weather.lon;
+
+      // Gọi forecast
+      final forecastRes = await dio.get(
+        'https://api.openweathermap.org/data/2.5/forecast',
+        queryParameters: {
+          'lat': lat,
+          'lon': lon,
+          'appid': apiKey,
+          'units': 'metric',
+          'lang': 'vi',
+        },
+      );
+
+      if (forecastRes.statusCode == 200) {
+        final List list = forecastRes.data['list'];
+        return list.map((json) => Forecast.fromJson(json)).toList();
+      } else {
+        throw Exception('Forecast error: ${forecastRes.statusMessage}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching forecast: $e');
     }
   }
 }

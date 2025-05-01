@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_api_dio/presentation/blocs/weather_bloc.dart';
 import 'package:weather_api_dio/presentation/blocs/weather_event.dart';
 import 'package:weather_api_dio/presentation/blocs/weather_state.dart';
+import 'package:weather_api_dio/presentation/widgets/forecast_info.dart';
 import 'package:weather_api_dio/presentation/widgets/weather_info.dart';
 
 class WeatherScreen extends StatefulWidget {
@@ -14,7 +15,13 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   final TextEditingController _cityController = TextEditingController();
-  final List<String> _sampleCities = ['Ha noi', 'Ho Chi Minh', 'Da Nang', 'Tokyo', 'New York'];
+  final List<String> _sampleCities = [
+    'Ha noi',
+    'Ho Chi Minh',
+    'Da Nang',
+    'Tokyo',
+    'New York',
+  ];
   String? _selectedCity;
 
   @override
@@ -78,7 +85,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       icon: const Icon(Icons.search),
                       label: const Text('Xem thời tiết'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 248, 186, 105),
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          248,
+                          186,
+                          105,
+                        ),
                         minimumSize: const Size.fromHeight(50),
                       ),
                     ),
@@ -88,7 +100,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       icon: const Icon(Icons.calendar_today),
                       label: const Text('Dự đoán 5 ngày tới'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 201, 247, 203),
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          201,
+                          247,
+                          203,
+                        ),
                         minimumSize: const Size.fromHeight(50),
                       ),
                     ),
@@ -102,6 +119,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is WeatherLoaded) {
                     return WeatherInfo(weather: state.weather);
+                  } else if (state is ForecastLoaded) {
+                    return ForecastInfo(forecasts: state.forecasts);
                   } else if (state is WeatherError) {
                     return Center(
                       child: Text(
@@ -138,6 +157,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   void _predictWeather() {
-    // TODO
+    final city = _cityController.text.trim();
+    if (city.isNotEmpty) {
+      context.read<WeatherBloc>().add(ForecastRequested(city));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vui lòng nhập hoặc chọn một thành phố')),
+      );
+    }
   }
 }
