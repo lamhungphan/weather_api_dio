@@ -1,18 +1,18 @@
-class Forecast {
+class ForecastModel {
   final DateTime dateTime;
   final double temperature;
   final String description;
   final String iconCode;
 
-  Forecast({
+  ForecastModel({
     required this.dateTime,
     required this.temperature,
     required this.description,
     required this.iconCode,
   });
 
-  factory Forecast.fromJson(Map<String, dynamic> json) {
-    return Forecast(
+  factory ForecastModel.fromJson(Map<String, dynamic> json) {
+    return ForecastModel(
       dateTime: DateTime.parse(json['dt_txt']),
       temperature: (json['main']['temp'] as num).toDouble(),
       description: json['weather'][0]['description'],

@@ -113,7 +113,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              BlocBuilder<WeatherBloc, WeatherState>(
+              BlocConsumer<WeatherBloc, WeatherState>(
+                listener: (context, state) {
+                  if (state is WeatherError || state is ForecastError) {
+                    final message = (state as dynamic).message;
+                    _showErrorDialog(context, message);
+                  }
+                },
                 builder: (context, state) {
                   if (state is WeatherLoading) {
                     return const Center(child: CircularProgressIndicator());
@@ -121,18 +127,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     return WeatherInfo(weather: state.weather);
                   } else if (state is ForecastLoaded) {
                     return ForecastInfo(forecasts: state.forecasts);
-                  } else if (state is WeatherError) {
-                    return Center(
-                      child: Text(
-                        state.message,
-                        style: const TextStyle(color: Colors.red, fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
-                    );
                   }
                   return const Center(
                     child: Text(
-                      'Hãy nhập hoặc chọn thành phố để xem thời tiết',
+                      'Nhập hoặc chọn thành phố để xem thời tiết',
                       textAlign: TextAlign.center,
                     ),
                   );
@@ -165,5 +163,22 @@ class _WeatherScreenState extends State<WeatherScreen> {
         const SnackBar(content: Text('Vui lòng nhập hoặc chọn một thành phố')),
       );
     }
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Lỗi'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Đóng'),
+              ),
+            ],
+          ),
+    );
   }
 }

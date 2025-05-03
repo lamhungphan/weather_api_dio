@@ -35,7 +35,7 @@ class WeatherError extends WeatherState {
 class ForecastLoading extends WeatherState {}
 
 class ForecastLoaded extends WeatherState {
-  final List<Forecast> forecasts;
+  final List<ForecastModel> forecasts;
 
   ForecastLoaded(this.forecasts);
 

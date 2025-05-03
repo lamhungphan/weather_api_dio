@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weather_api_dio/data/model/forecast_model.dart';
 
 class ForecastInfo extends StatelessWidget {
-  final List<Forecast> forecasts;
+  final List<ForecastModel> forecasts;
 
   const ForecastInfo({Key? key, required this.forecasts}) : super(key: key);
 
