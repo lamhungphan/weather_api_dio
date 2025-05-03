@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_api_dio/presentation/blocs/weather_bloc.dart';
 import 'package:weather_api_dio/presentation/blocs/weather_event.dart';
 import 'package:weather_api_dio/presentation/blocs/weather_state.dart';
-import 'package:weather_api_dio/presentation/widgets/forecast_info.dart';
-import 'package:weather_api_dio/presentation/widgets/weather_info.dart';
+import 'package:weather_api_dio/presentation/widgets/five_days_forecast_widget.dart';
+import 'package:weather_api_dio/presentation/widgets/hourly_forecast_widget.dart';
+import 'package:weather_api_dio/presentation/widgets/detail_weather_widget.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -23,6 +24,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
     'New York',
   ];
   String? _selectedCity;
+  bool _isCityValid = false;
 
   @override
   void dispose() {
@@ -95,20 +97,21 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    ElevatedButton.icon(
-                      onPressed: _predictWeather,
-                      icon: const Icon(Icons.calendar_today),
-                      label: const Text('Dự đoán 5 ngày tới'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(
-                          255,
-                          201,
-                          247,
-                          203,
+                    if (_isCityValid)
+                      ElevatedButton.icon(
+                        onPressed: _predictWeather,
+                        icon: const Icon(Icons.calendar_today),
+                        label: const Text('Dự đoán 5 ngày tới'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            201,
+                            247,
+                            203,
+                          ),
+                          minimumSize: const Size.fromHeight(50),
                         ),
-                        minimumSize: const Size.fromHeight(50),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -118,16 +121,39 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   if (state is WeatherError || state is ForecastError) {
                     final message = (state as dynamic).message;
                     _showErrorDialog(context, message);
+                    setState(() {
+                      _isCityValid = false;
+                    });
+                  } else if (state is WeatherLoaded) {
+                    setState(() {
+                      _isCityValid = true;
+                    });
                   }
                 },
                 builder: (context, state) {
                   if (state is WeatherLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is WeatherLoaded) {
-                    return WeatherInfo(weather: state.weather);
+                    return DetailWeatherWidget(weather: state.weather);
                   } else if (state is ForecastLoaded) {
-                    return ForecastInfo(forecasts: state.forecasts);
-                  }
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FiveDaysForecastWidget(forecasts: state.forecasts),
+                        const SizedBox(height: 16),
+                        const Text(
+                          '🌦️ Dự báo 24 giờ tới',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        HourlyForecastWidget(forecasts: state.forecasts),
+                      ],
+                    );
+                  } else if (state is ForecastLoaded) {}
+
                   return const Center(
                     child: Text(
                       'Nhập hoặc chọn thành phố để xem thời tiết',
@@ -136,6 +162,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   );
                 },
               ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
@@ -146,6 +173,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void _fetchWeather() {
     final city = _cityController.text.trim();
     if (city.isNotEmpty) {
+      setState(() {
+        _isCityValid = false;
+      });
       context.read<WeatherBloc>().add(WeatherRequested(city));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

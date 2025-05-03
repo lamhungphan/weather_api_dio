@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:weather_api_dio/data/model/forecast_model.dart';
 
-class ForecastInfo extends StatelessWidget {
+class FiveDaysForecastWidget extends StatelessWidget {
   final List<ForecastModel> forecasts;
 
-  const ForecastInfo({Key? key, required this.forecasts}) : super(key: key);
+  const FiveDaysForecastWidget({Key? key, required this.forecasts}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Lấy các dự báo buổi trưa (12:00:00) trong 5 ngày
-    final dailyForecasts =
-        forecasts.where((f) => f.dateTime.hour == 12).take(5).toList();
+    final dailyForecasts = forecasts.where((f) => f.dateTime.hour == 12).take(5).toList();
+    final String iconUrl = dotenv.env['WEATHER_ICON']!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +55,7 @@ class ForecastInfo extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Image.network(
-                      'https://openweathermap.org/img/wn/${forecast.iconCode}@2x.png',
+                      '$iconUrl/${forecast.iconCode}@2x.png',
                       width: 60,
                       height: 60,
                     ),

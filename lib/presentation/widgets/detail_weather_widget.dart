@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:weather_api_dio/data/model/weather_model.dart';
 
-class WeatherInfo extends StatelessWidget {
+class DetailWeatherWidget extends StatelessWidget {
   final WeatherModel weather;
 
-  const WeatherInfo({required this.weather, super.key});
+  const DetailWeatherWidget({required this.weather, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final String iconUrl = dotenv.env['WEATHER_ICON']!;
+
     return Center(
       child: Card(
         color: const Color.fromARGB(255, 192, 227, 255),
@@ -20,11 +23,14 @@ class WeatherInfo extends StatelessWidget {
             children: [
               Text(
                 weather.cityName,
-                style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 16),
               Image.network(
-                'http://openweathermap.org/img/wn/${weather.iconCode}@2x.png',
+                '$iconUrl/${weather.iconCode}@2x.png',
                 width: 120,
                 height: 120,
                 errorBuilder: (context, error, stackTrace) {
@@ -38,19 +44,33 @@ class WeatherInfo extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 '${weather.temperature}°C',
-                style: const TextStyle(fontSize: 48, fontWeight: FontWeight.w300),
+                style: const TextStyle(
+                  fontSize: 48,
+                  fontWeight: FontWeight.w300,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
                 weather.description,
-                style: const TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildWeatherDetail(Icons.water_drop, '${weather.humidity}%', 'Độ ẩm'),
-                  _buildWeatherDetail(Icons.air, '${weather.windSpeed} m/s', 'Gió'),
+                  _buildWeatherDetail(
+                    Icons.water_drop,
+                    '${weather.humidity}%',
+                    'Độ ẩm',
+                  ),
+                  _buildWeatherDetail(
+                    Icons.air,
+                    '${weather.windSpeed} m/s',
+                    'Gió',
+                  ),
                 ],
               ),
             ],

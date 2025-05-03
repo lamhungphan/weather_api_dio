@@ -13,7 +13,7 @@ class WeatherRepository {
   Future<WeatherModel> getWeather(String city) async {
     try {
       final response = await dio.get(
-        '$baseUrl/weather',
+        '$baseUrl/data/2.5/weather',
         queryParameters: {
           'q': city,
           'appid': apiKey,
@@ -46,7 +46,7 @@ class WeatherRepository {
   Future<List<ForecastModel>> getForecast(String city) async {
     try {
       final response = await dio.get(
-        '$baseUrl/forecast',
+        '$baseUrl/data/2.5/forecast',
         queryParameters: {
           'q': city,
           'appid': apiKey,
