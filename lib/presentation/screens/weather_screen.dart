@@ -6,6 +6,7 @@ import 'package:weather_api_dio/presentation/blocs/weather_state.dart';
 import 'package:weather_api_dio/presentation/widgets/five_days_forecast_widget.dart';
 import 'package:weather_api_dio/presentation/widgets/hourly_forecast_widget.dart';
 import 'package:weather_api_dio/presentation/widgets/detail_weather_widget.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -170,7 +171,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
     );
   }
 
-  void _fetchWeather() {
+  void _fetchWeather() async {
+    if (!await checkConnection(context)) return;
+
     final city = _cityController.text.trim();
     if (city.isNotEmpty) {
       setState(() {
@@ -184,7 +187,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
     }
   }
 
-  void _predictWeather() {
+  void _predictWeather() async {
+    if (!await checkConnection(context)) return;
+
     final city = _cityController.text.trim();
     if (city.isNotEmpty) {
       context.read<WeatherBloc>().add(ForecastRequested(city));
@@ -193,6 +198,19 @@ class _WeatherScreenState extends State<WeatherScreen> {
         const SnackBar(content: Text('Vui lòng nhập hoặc chọn một thành phố')),
       );
     }
+  }
+
+  Future<bool> checkConnection(BuildContext context) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      _showErrorDialog(
+        context,
+        'Không có kết nối mạng. Vui lòng kiểm tra Wi-Fi hoặc dữ liệu di động',
+      );
+      return false;
+    }
+    return true;
   }
 
   void _showErrorDialog(BuildContext context, String message) {

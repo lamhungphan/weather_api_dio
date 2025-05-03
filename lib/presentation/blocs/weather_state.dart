@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:weather_api_dio/data/model/forecast_model.dart';
-import 'package:weather_api_dio/data/model/weather_model.dart';
+import 'package:weather_api_dio/domain/models/forecast_model.dart';
+import 'package:weather_api_dio/domain/models/weather_model.dart';
 
 abstract class WeatherState extends Equatable {
   const WeatherState();
@@ -31,13 +31,12 @@ class WeatherError extends WeatherState {
   List<Object> get props => [message];
 }
 
-// FORECAST
 class ForecastLoading extends WeatherState {}
 
 class ForecastLoaded extends WeatherState {
   final List<ForecastModel> forecasts;
 
-  ForecastLoaded(this.forecasts);
+  const ForecastLoaded(this.forecasts);
 
   @override
   List<Object> get props => [forecasts];

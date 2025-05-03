@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:weather_api_dio/data/model/forecast_model.dart';
+import 'package:weather_api_dio/domain/models/forecast_model.dart';
 
 class FiveDaysForecastWidget extends StatelessWidget {
   final List<ForecastModel> forecasts;

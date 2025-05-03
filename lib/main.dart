@@ -1,28 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:weather_api_dio/data/repositories/weather_repository_impl.dart';
+import 'package:weather_api_dio/domain/usecases/get_weather.dart';
 import 'package:weather_api_dio/presentation/blocs/weather_bloc.dart';
 import 'package:weather_api_dio/presentation/screens/weather_screen.dart';
+import 'package:weather_api_dio/service/api_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  print(dotenv.env); 
 
-  runApp(const MyApp());
+  final apiKey = dotenv.env['WEATHER_KEY'] ?? '';
+  final apiService = ApiService(apiKey: apiKey);
+
+  final getWeatherByCity = GetWeatherByCity(apiService);
+  final getForecastByCity = GetForecastByCity(apiService);
+
+  runApp(
+    MyApp(
+      getWeatherByCity: getWeatherByCity,
+      getForecastByCity: getForecastByCity,
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final GetWeatherByCity getWeatherByCity;
+  final GetForecastByCity getForecastByCity;
+
+  const MyApp({
+    super.key,
+    required this.getWeatherByCity,
+    required this.getForecastByCity,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final apiKey = dotenv.env['WEATHER_KEY'] ?? '';
     return BlocProvider(
-      create: (context) => WeatherBloc(WeatherRepository(apiKey: apiKey)),
+      create:
+          (_) => WeatherBloc(
+            getWeatherByCity: getWeatherByCity,
+            getForecastByCity: getForecastByCity,
+          ),
       child: MaterialApp(
-        title: 'Weather App',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(primarySwatch: Colors.blue),
         home: const WeatherScreen(),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:weather_api_dio/data/model/weather_model.dart';
+import 'package:weather_api_dio/domain/models/weather_model.dart';
 
 class DetailWeatherWidget extends StatelessWidget {
   final WeatherModel weather;
