@@ -1,6 +1,6 @@
 import 'package:weather_api_dio/domain/models/forecast_model.dart';
 import 'package:weather_api_dio/domain/models/weather_model.dart';
-import '/service/api_service.dart';
+import 'package:weather_api_dio/service/api_service.dart';
 
 class WeatherRepository {
   final ApiService apiService;
@@ -14,6 +14,8 @@ class WeatherRepository {
 
   Future<List<ForecastModel>> getForecast(String city) async {
     final listJson = await apiService.fetchForecast(city);
-    return listJson.map((json) => ForecastModel.fromJson(json)).toList();
+    return listJson
+        .map((json) => ForecastModel.fromJson(json as Map<String, dynamic>))
+        .toList();
   }
 }

@@ -1,25 +1,23 @@
 import 'package:weather_api_dio/domain/models/forecast_model.dart';
-import 'package:weather_api_dio/service/api_service.dart';
 import 'package:weather_api_dio/domain/models/weather_model.dart';
+import 'package:weather_api_dio/domain/repositories/weather_repository.dart';
 
 class GetWeatherByCity {
-  final ApiService apiService;
+  final WeatherRepository repository;
 
-  GetWeatherByCity(this.apiService);
+  GetWeatherByCity(this.repository);
 
   Future<WeatherModel> execute(String cityName) async {
-    final weatherJson = await apiService.fetchCurrentWeather(cityName);
-    return WeatherModel.fromJson(weatherJson);
+    return await repository.getWeather(cityName);
   }
 }
 
 class GetForecastByCity {
-  final ApiService apiService;
+  final WeatherRepository repository;
 
-  GetForecastByCity(this.apiService);
+  GetForecastByCity(this.repository);
 
   Future<List<ForecastModel>> execute(String cityName) async {
-    final forecastJson = await apiService.fetchForecast(cityName);
-    return forecastJson.map<ForecastModel>((e) => ForecastModel.fromJson(e)).toList();
+    return await repository.getForecast(cityName);
   }
 }

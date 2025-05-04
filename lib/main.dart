@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:weather_api_dio/domain/repositories/weather_repository.dart';
 import 'package:weather_api_dio/domain/usecases/get_weather.dart';
 import 'package:weather_api_dio/presentation/blocs/weather_bloc.dart';
 import 'package:weather_api_dio/presentation/screens/weather_screen.dart';
@@ -12,9 +13,10 @@ Future<void> main() async {
 
   final apiKey = dotenv.env['WEATHER_KEY'] ?? '';
   final apiService = ApiService(apiKey: apiKey);
-
-  final getWeatherByCity = GetWeatherByCity(apiService);
-  final getForecastByCity = GetForecastByCity(apiService);
+  final repository = WeatherRepository(apiService);
+  
+  final getWeatherByCity = GetWeatherByCity(repository);
+  final getForecastByCity = GetForecastByCity(repository);
 
   runApp(
     MyApp(

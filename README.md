@@ -2,9 +2,8 @@
 
 This app uses Dio for handling API requests
 
-It follows a lightweight Clean Architecture: Presentation → Domain → Data layers
+It follows a lightweight Architecture: Presentation → Domain → Service layers
 
-State management is handled using Bloc
 
 # Technologies Used
 Flutter
@@ -18,8 +17,8 @@ JSON Serialization (API response parsing)
 # Architecture Diagram
 ![alt text](weather_app_architechture.jpg)
 
-# Interface
-![alt text](weather_app_ui.jpg)
+# Demo
+[video demo (mp4)](assets/weather_app_demo.mp4)
 
 # Installation
 
