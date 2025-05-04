@@ -20,6 +20,8 @@ JSON Serialization (API response parsing)
 # Demo
 [video demo (mp4)](assets/weather_app_demo.mp4)
 
+[Drive](https://drive.google.com/drive/folders/1nvTmUazqtUyOJLPEpfgOkW4IujbjJrVE?usp=drive_link)
+
 # Installation
 
 Clone the repository:

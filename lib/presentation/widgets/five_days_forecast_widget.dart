@@ -5,12 +5,14 @@ import 'package:weather_api_dio/domain/models/forecast_model.dart';
 class FiveDaysForecastWidget extends StatelessWidget {
   final List<ForecastModel> forecasts;
 
-  const FiveDaysForecastWidget({Key? key, required this.forecasts}) : super(key: key);
+  const FiveDaysForecastWidget({Key? key, required this.forecasts})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Lấy các dự báo buổi trưa (12:00:00) trong 5 ngày
-    final dailyForecasts = forecasts.where((f) => f.dateTime.hour == 12).take(5).toList();
+    final dailyForecasts =
+        forecasts.where((f) => f.dateTime.hour == 12).take(5).toList();
     final String iconUrl = dotenv.env['WEATHER_ICON']!;
 
     return Column(
@@ -38,7 +40,7 @@ class FiveDaysForecastWidget extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.lightBlueAccent, Colors.blue.shade200],
+                    colors: _getGradientByTemperature(forecast.temperature),
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -55,19 +57,24 @@ class FiveDaysForecastWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Image.network(
-                      '$iconUrl/${forecast.iconCode}@2x.png',
-                      width: 60,
-                      height: 60,
+                      '$iconUrl/${forecast.iconCode}@4x.png',
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.contain,
                     ),
                     Text(
                       '${forecast.temperature.toStringAsFixed(1)}°C',
-                      style: const TextStyle(fontSize: 20, color: Colors.white),
+                      style: const TextStyle(
+                        fontSize: 38,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       forecast.description,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 24,
                         color: Colors.white70,
                       ),
                     ),
@@ -79,5 +86,19 @@ class FiveDaysForecastWidget extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+List<Color> _getGradientByTemperature(double temp) {
+  if (temp >= 35) {
+    return [Colors.deepOrange.shade200, Colors.deepOrange.shade700];
+  } else if (temp >= 29) {
+    return [Colors.orange.shade100, Colors.orange.shade400];
+  } else if (temp >= 20) {
+    return [Colors.lightBlueAccent, Colors.blue.shade200];
+  } else if (temp >= 10) {
+    return [Colors.blue.shade100, Colors.blue.shade400];
+  } else {
+    return [Colors.indigo.shade100, Colors.blueGrey.shade300];
   }
 }

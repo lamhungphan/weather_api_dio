@@ -21,6 +21,7 @@ class HourlyForecastWidget extends StatelessWidget {
 
             return Card(
               margin: const EdgeInsets.symmetric(vertical: 6),
+              color: const Color(0xFFB3E5FC),
               elevation: 3,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -30,12 +31,12 @@ class HourlyForecastWidget extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 60,
+                      width: 100,
                       child: Text(
                         time,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 20,
                         ),
                       ),
                     ),
@@ -44,14 +45,14 @@ class HourlyForecastWidget extends StatelessWidget {
                         children: [
                           Image.network(
                             '$iconUrl/${forecast.iconCode}@2x.png',
-                            width: 40,
-                            height: 40,
+                            width: 60,
+                            height: 60,
                           ),
                           const SizedBox(width: 8),
                           Flexible(
                             child: Text(
                               '${forecast.description}',
-                              style: const TextStyle(fontSize: 16),
+                              style: const TextStyle(fontSize: 18),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -60,9 +61,13 @@ class HourlyForecastWidget extends StatelessWidget {
                     ),
                     Text(
                       '${forecast.temperature.toStringAsFixed(0)}°C',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 22,
+                        color:
+                            forecast.temperature >= 30
+                                ? Colors.deepOrange
+                                : Colors.blueAccent,
                       ),
                     ),
                   ],

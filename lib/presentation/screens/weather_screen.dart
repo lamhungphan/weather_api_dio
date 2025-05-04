@@ -36,7 +36,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('🌤️ Weather App'), centerTitle: true),
+      backgroundColor: Color(0xFF81D4FA),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
@@ -88,12 +88,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       icon: const Icon(Icons.search),
                       label: const Text('Xem thời tiết'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(
-                          255,
-                          248,
-                          186,
-                          105,
-                        ),
+                        backgroundColor: const Color(0xFFE1F5FE),
                         minimumSize: const Size.fromHeight(50),
                       ),
                     ),
@@ -104,12 +99,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         icon: const Icon(Icons.calendar_today),
                         label: const Text('Dự đoán 5 ngày tới'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(
-                            255,
-                            201,
-                            247,
-                            203,
-                          ),
+                          backgroundColor: const Color(0xFFE1F5FE),
                           minimumSize: const Size.fromHeight(50),
                         ),
                       ),
