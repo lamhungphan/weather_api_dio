@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:weather_api_dio/presentation/blocs/weather_bloc.dart';
 import 'package:weather_api_dio/presentation/blocs/weather_event.dart';
 import 'package:weather_api_dio/presentation/blocs/weather_state.dart';
@@ -7,6 +8,7 @@ import 'package:weather_api_dio/presentation/widgets/five_days_forecast_widget.d
 import 'package:weather_api_dio/presentation/widgets/hourly_forecast_widget.dart';
 import 'package:weather_api_dio/presentation/widgets/detail_weather_widget.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:geocoding/geocoding.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -31,6 +33,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void dispose() {
     _cityController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchWeatherByLocation();
   }
 
   @override
@@ -237,5 +245,51 @@ class _WeatherScreenState extends State<WeatherScreen> {
             ],
           ),
     );
+  }
+
+  void _fetchWeatherByLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return _showErrorDialog(context, 'Dịch vụ định vị đang tắt');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return _showErrorDialog(context, 'Bạn cần cấp quyền vị trí');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return _showErrorDialog(
+        context,
+        'Không thể sử dụng vị trí vì bị từ chối vĩnh viễn.',
+      );
+    }
+
+    try {
+      final position = await Geolocator.getCurrentPosition();
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      final cityName =
+          placemarks.first.locality ?? placemarks.first.subAdministrativeArea;
+
+      setState(() {
+        _cityController.text = cityName ?? '';
+        _selectedCity = null;
+      });
+
+      context.read<WeatherBloc>().add(
+        FetchWeatherByLocation(lat: position.latitude, lon: position.longitude),
+      );
+    } catch (e) {
+      _showErrorDialog(context, 'Lỗi khi lấy vị trí: $e');
+    }
   }
 }

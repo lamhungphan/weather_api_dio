@@ -21,3 +21,13 @@ class GetForecastByCity {
     return await repository.getForecast(cityName);
   }
 }
+
+class GetWeatherByLocation {
+  final WeatherRepository repository;
+
+  GetWeatherByLocation(this.repository);
+
+  Future<WeatherModel> execute(double lat, double lon) async {
+    return await repository.getWeatherByLocation(lat, lon);
+  }
+}

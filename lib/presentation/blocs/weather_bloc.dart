@@ -6,9 +6,13 @@ import 'package:weather_api_dio/presentation/blocs/weather_state.dart';
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   final GetWeatherByCity getWeatherByCity;
   final GetForecastByCity getForecastByCity;
+  final GetWeatherByLocation getWeatherByLocation;
 
-  WeatherBloc({required this.getWeatherByCity, required this.getForecastByCity})
-    : super(WeatherInitial()) {
+  WeatherBloc({
+    required this.getWeatherByCity,
+    required this.getForecastByCity,
+    required this.getWeatherByLocation,
+  }) : super(WeatherInitial()) {
     on<WeatherRequested>((event, emit) async {
       emit(WeatherLoading());
       try {
@@ -28,6 +32,20 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       } catch (e) {
         final message = e.toString().replaceAll(RegExp(r'Exception: *'), '');
         emit(ForecastError(message));
+      }
+    });
+
+    on<FetchWeatherByLocation>((event, emit) async {
+      emit(WeatherLoading());
+      try {
+        final weather = await getWeatherByLocation.execute(
+          event.lat,
+          event.lon,
+        );
+        emit(WeatherLoaded(weather));
+      } catch (e) {
+        final message = e.toString().replaceAll(RegExp(r'Exception: *'), '');
+        emit(WeatherError(message));
       }
     });
   }

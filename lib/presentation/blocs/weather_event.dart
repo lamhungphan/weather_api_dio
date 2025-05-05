@@ -24,3 +24,10 @@ class ForecastRequested extends WeatherEvent {
   @override
   List<Object> get props => [this.city];
 }
+
+class FetchWeatherByLocation extends WeatherEvent {
+  final double lat;
+  final double lon;
+
+  FetchWeatherByLocation({required this.lat, required this.lon});
+}

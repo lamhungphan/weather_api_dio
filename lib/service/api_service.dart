@@ -44,6 +44,28 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>> fetchCurrentWeatherByLocation({
+    required double lat,
+    required double lon,
+  }) async {
+    try {
+      final response = await dio.get(
+        '$baseUrl/weather',
+        queryParameters: {
+          'lat': lat,
+          'lon': lon,
+          'appid': apiKey,
+          'units': 'metric',
+          'lang': 'vi',
+        },
+      );
+      return response.data;
+    } on DioException catch (e) {
+      _handleDioError(e);
+      rethrow;
+    }
+  }
+
   void _handleDioError(DioException e) {
     if (e.response?.statusCode == 404) {
       throw Exception('Không tìm thấy thành phố. Vui lòng kiểm tra lại tên');

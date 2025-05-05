@@ -18,4 +18,12 @@ class WeatherRepository {
         .map((json) => ForecastModel.fromJson(json as Map<String, dynamic>))
         .toList();
   }
+
+  Future<WeatherModel> getWeatherByLocation(double lat, double lon) async {
+    final json = await apiService.fetchCurrentWeatherByLocation(
+      lat: lat,
+      lon: lon,
+    );
+    return WeatherModel.fromJson(json);
+  }
 }

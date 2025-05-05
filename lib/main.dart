@@ -14,14 +14,16 @@ Future<void> main() async {
   final apiKey = dotenv.env['WEATHER_KEY'] ?? '';
   final apiService = ApiService(apiKey: apiKey);
   final repository = WeatherRepository(apiService);
-  
+
   final getWeatherByCity = GetWeatherByCity(repository);
   final getForecastByCity = GetForecastByCity(repository);
+  final getWeatherByLocation = GetWeatherByLocation(repository);
 
   runApp(
     MyApp(
       getWeatherByCity: getWeatherByCity,
       getForecastByCity: getForecastByCity,
+      getWeatherByLocation: getWeatherByLocation,
     ),
   );
 }
@@ -29,11 +31,13 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   final GetWeatherByCity getWeatherByCity;
   final GetForecastByCity getForecastByCity;
+  final GetWeatherByLocation getWeatherByLocation;
 
   const MyApp({
     super.key,
     required this.getWeatherByCity,
     required this.getForecastByCity,
+    required this.getWeatherByLocation,
   });
 
   @override
@@ -43,6 +47,7 @@ class MyApp extends StatelessWidget {
           (_) => WeatherBloc(
             getWeatherByCity: getWeatherByCity,
             getForecastByCity: getForecastByCity,
+            getWeatherByLocation: getWeatherByLocation,
           ),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
