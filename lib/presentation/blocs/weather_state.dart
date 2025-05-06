@@ -3,50 +3,63 @@ import 'package:weather_api_dio/domain/models/forecast_model.dart';
 import 'package:weather_api_dio/domain/models/weather_model.dart';
 
 abstract class WeatherState extends Equatable {
-  const WeatherState();
+  final String? currentCity;
+
+  const WeatherState({this.currentCity});
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [currentCity];
 }
 
-class WeatherInitial extends WeatherState {}
+class WeatherInitial extends WeatherState {
+  const WeatherInitial() : super(currentCity: null);
+}
 
-class WeatherLoading extends WeatherState {}
+class WeatherLoading extends WeatherState {
+  const WeatherLoading({String? currentCity}) : super(currentCity: currentCity);
+}
 
 class WeatherLoaded extends WeatherState {
   final WeatherModel weather;
 
-  const WeatherLoaded(this.weather);
+  const WeatherLoaded(this.weather, {required String currentCity})
+    : super(currentCity: currentCity);
 
   @override
-  List<Object> get props => [weather];
+  List<Object?> get props => [weather, currentCity];
 }
 
 class WeatherError extends WeatherState {
   final String message;
 
-  const WeatherError(this.message);
+  const WeatherError(this.message, {String? currentCity})
+    : super(currentCity: currentCity);
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message, currentCity];
 }
 
-class ForecastLoading extends WeatherState {}
+class ForecastLoading extends WeatherState {
+  const ForecastLoading({String? currentCity})
+    : super(currentCity: currentCity);
+}
 
 class ForecastLoaded extends WeatherState {
   final List<ForecastModel> forecasts;
 
-  const ForecastLoaded(this.forecasts);
+  const ForecastLoaded(this.forecasts, {String? currentCity})
+    : super(currentCity: currentCity);
 
   @override
-  List<Object> get props => [forecasts];
+  List<Object?> get props => [forecasts, currentCity];
 }
 
 class ForecastError extends WeatherState {
   final String message;
 
-  ForecastError(this.message);
+  const ForecastError(this.message, {String? currentCity})
+    : super(currentCity: currentCity);
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message, currentCity];
 }

@@ -12,37 +12,48 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     required this.getWeatherByCity,
     required this.getForecastByCity,
     required this.getWeatherByLocation,
-  }) : super(WeatherInitial()) {
+  }) : super(const WeatherInitial()) {
+    
+    // ----------- WEATHER REQUESTED -----------
     on<WeatherRequested>((event, emit) async {
-      emit(WeatherLoading());
+      // ⛔ Nếu đang loading → bỏ qua
+      if (state is WeatherLoading) return;
+
+      // ⛔ Nếu trùng thành phố → bỏ qua
+      // final currentCity = state.currentCity ?? '';
+      // if (currentCity.toLowerCase().trim() == event.city.toLowerCase().trim()) return;
+
+      emit(WeatherLoading(currentCity: event.city));
+
       try {
         final weather = await getWeatherByCity.execute(event.city);
-        emit(WeatherLoaded(weather));
+        emit(WeatherLoaded(weather, currentCity: event.city));
       } catch (e) {
         final message = e.toString().replaceAll(RegExp(r'Exception: *'), '');
-        emit(WeatherError(message));
+        emit(WeatherError(message, currentCity: event.city));
       }
     });
 
+    // ----------- FORECAST REQUESTED -----------
     on<ForecastRequested>((event, emit) async {
-      emit(ForecastLoading());
+      emit(ForecastLoading(currentCity: event.city));
+
       try {
         final forecastList = await getForecastByCity.execute(event.city);
-        emit(ForecastLoaded(forecastList));
+        emit(ForecastLoaded(forecastList, currentCity: event.city));
       } catch (e) {
         final message = e.toString().replaceAll(RegExp(r'Exception: *'), '');
-        emit(ForecastError(message));
+        emit(ForecastError(message, currentCity: event.city));
       }
     });
 
+    // ----------- WEATHER BY LOCATION -----------
     on<FetchWeatherByLocation>((event, emit) async {
-      emit(WeatherLoading());
+      emit(const WeatherLoading());
+
       try {
-        final weather = await getWeatherByLocation.execute(
-          event.lat,
-          event.lon,
-        );
-        emit(WeatherLoaded(weather));
+        final weather = await getWeatherByLocation.execute(event.lat, event.lon);
+        emit(WeatherLoaded(weather, currentCity: weather.cityName)); // Gán city name nếu có
       } catch (e) {
         final message = e.toString().replaceAll(RegExp(r'Exception: *'), '');
         emit(WeatherError(message));

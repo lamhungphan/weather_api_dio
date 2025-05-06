@@ -28,6 +28,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   ];
   String? _selectedCity;
   bool _isCityValid = false;
+  String? _currentCity;
 
   @override
   void dispose() {
@@ -104,7 +105,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton.icon(
-                            onPressed: _fetchWeather,
+                            onPressed:
+                                _shouldDisableSearchButton()
+                                    ? null
+                                    : _fetchWeather,
                             icon: const Icon(Icons.search),
                             label: const Text('Xem thời tiết'),
                             style: ElevatedButton.styleFrom(
@@ -112,6 +116,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               minimumSize: const Size.fromHeight(50),
                             ),
                           ),
+
                           const SizedBox(height: 12),
                           if (_isCityValid)
                             ElevatedButton.icon(
@@ -138,6 +143,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         } else if (state is WeatherLoaded) {
                           setState(() {
                             _isCityValid = true;
+                            _currentCity =
+                                state.currentCity?.toLowerCase().trim();
                           });
                         }
                       },
@@ -245,6 +252,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
             ],
           ),
     );
+  }
+
+  bool _shouldDisableSearchButton() {
+    final inputCity = _cityController.text.toLowerCase().trim();
+    return _currentCity != null && _currentCity == inputCity;
   }
 
   void _fetchWeatherByLocation() async {

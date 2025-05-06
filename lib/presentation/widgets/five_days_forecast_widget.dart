@@ -35,8 +35,8 @@ class FiveDaysForecastWidget extends StatelessWidget {
               return Container(
                 width: 180,
                 padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 12,
+                  vertical: 10,
+                  horizontal: 0,
                 ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -74,7 +74,7 @@ class FiveDaysForecastWidget extends StatelessWidget {
                       forecast.description,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontSize: 24,
+                        fontSize: 18,
                         color: Colors.white70,
                       ),
                     ),
